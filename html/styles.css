@@ -1,0 +1,8 @@
+.value-line {
+	display: flex;
+	align-items: center;
+}
+
+.value-line>*:nth-child(1) {
+	flex: 1 1 auto;
+}
