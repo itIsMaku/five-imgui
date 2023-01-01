@@ -166,9 +166,7 @@ function screenToWorld(flags, ignore)
     return GetShapeTestResult(ray)
 end
 
-RegisterNetEvent("screen2world:luaImHUI")
 AddEventHandler("screen2world:luaImHUI", function(notClick)
-    -- print("raycasting!")
-    local _, hit, endCoords, surfaceNormal, entity = screenToWorld(-1, -1) -- first -1 = flags (backup flag 22 - doesn't include vegetation, but includes water...)
+    local _, hit, endCoords, surfaceNormal, entity = screenToWorld(-1, -1)
     TriggerEvent("screen2world:ImHUI", hit, endCoords, surfaceNormal, entity, notClick)
 end)

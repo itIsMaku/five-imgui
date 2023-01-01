@@ -201,7 +201,7 @@ RegisterNUICallback('windowClosed', function(data, cb)
     TriggerEvent('imhui:windowClosed', data.guiId, data.elementsData)
 end)
 
-RegisterNUICallback('clicked', function(data)
+RegisterNUICallback('click', function(data)
     TriggerEvent("screen2world:luaImHUI")
 end)
 
