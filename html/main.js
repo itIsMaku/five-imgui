@@ -47,8 +47,9 @@ window.addEventListener('message', (event) => {
         gui.data = data;
         guis[gui.id] = gui;
     } else if (type === 'update') {
-        for (let i = 0; i < gui.content.length; i++) {
-            const element = gui.content[i];
+        console.log(JSON.stringify(gui))
+        for (let i = 0; i < gui.localContentUpdate.length; i++) {
+            const element = gui.localContentUpdate[i];
             const index = getGuiElementIndexByElementId(guis[gui.id].content, element.id);
             if (index != -1) {
                 guis[gui.id].content[index] = element;

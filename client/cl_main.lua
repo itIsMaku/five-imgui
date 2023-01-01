@@ -93,6 +93,8 @@ function ImHUI.create(gid, title, content)
 end
 
 function ImHUI.update(gid)
+    print(gid)
+    print(json.encode(Guis[gid]))
     Guis[gid].localContentUpdate = {}
     return {
         text = function(id, value, json)
@@ -167,6 +169,9 @@ function ImHUI.update(gid)
                 type = 'update',
                 gui = Guis[gid]
             })
+            for k, v in pairs(Guis[gid].localContentUpdate) do
+                Guis[gid].content[k] = v
+            end
             Guis[gid].localContentUpdate = {}
         end,
         close = function()
@@ -246,4 +251,17 @@ RegisterCommand('imhui-focus', function()
 
         Citizen.Wait(0)
     end
+end)
+
+RegisterCommand('test', function()
+    local gui = ImHUI.create('test', 'test2')
+    gui.text('text', 'Active players: 1')
+    gui.open()
+end)
+
+
+RegisterCommand('testUpdate', function()
+    local gui = ImHUI.update('test')
+    gui.text('text', 'Active players: 2')
+    gui.update()
 end)
