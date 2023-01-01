@@ -50,13 +50,22 @@ window.addEventListener('message', (event) => {
         console.log(JSON.stringify(gui))
         for (let i = 0; i < gui.localContentUpdate.length; i++) {
             const element = gui.localContentUpdate[i];
+            if (element.data === undefined) {
+                element.data = [];
+            }
             const index = getGuiElementIndexByElementId(guis[gui.id].content, element.id);
             if (index != -1) {
-                guis[gui.id].content[index] = element;
+                if (element.method == 'text' && element.data[0] == 'json') {
+                    document.getElementById(element.id).innerHTML = element.value;
+                } else {
+                    guis[gui.id].content[index] = element;
+                }
             } else {
                 guis[gui.id].content.push(element);
             }
-            guis[gui.id].data[element.id] = element.defaultValue;
+            if (element.method != 'text' && element.data[0] != 'json') {
+                guis[gui.id].data[element.id] = element.defaultValue;
+            }
         }
     } else if (type === 'destroy') {
         destroy(gui.id);
@@ -109,15 +118,16 @@ function createUI(gui) {
             });
         }
         if (element.method == 'text' && element.data[0] == 'json' && !guis[gui.id].data[element.id]) {
-            guis[gui.id].data[element.id] = true
+            console.log(`Creating pre for ${element.id}`);
+            guis[gui.id].data[element.id] = true;
             const container = document.getElementById(gui.settings.id).getElementsByTagName('details');
             const textBox = document.createElement("pre");
-            textBox.setAttribute("id", "formatted-text-" + element.id);
+            textBox.setAttribute("id", element.id);
             if (element.data[1] == 'childstyle') {
                 textBox.className = ('child layout-scrollbar');
             }
             container[0].append(textBox);
-            document.getElementById("formatted-text-" + element.id).innerHTML = element.value;
+            document.getElementById(element.id).innerHTML = element.value;
         }
     }
     if (ImHUI.button('✖')) {

@@ -11,6 +11,8 @@ export class WrapperNode extends Node {
         this.setClassName(className);
         this.#detailsElem = this.elem;
         this.#context = new Context(this.elem, this.end);
+        this.elem.style.left = 200 + 'px';
+        this.elem.style.top = 200 + 'px';
         this.#detailsElem.addEventListener('click', (e) => {
             this.#value = this.#detailsElem.open;
             this.#haveNewValue = true;
