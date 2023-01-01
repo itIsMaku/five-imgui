@@ -1,5 +1,6 @@
 ImHUI = {}
 Guis = {}
+ImHUI.Opened = {}
 
 function ImHUI.create(gid, title, content)
     if not content then
@@ -45,7 +46,7 @@ function ImHUI.create(gid, title, content)
         end,
         slider = function(id, value, default, min, max)
             table.insert(Guis[gid].content,
-                { id = id, method = 'sliderFloat', value = value, defaultValue = 1, data = { min, max } })
+                { id = id, method = 'sliderFloat', value = value, defaultValue = default, data = { min, max } })
         end,
         input = function(id, value, default)
             table.insert(Guis[gid].content,
@@ -82,12 +83,14 @@ function ImHUI.create(gid, title, content)
                 type = 'create',
                 gui = Guis[gid]
             })
+            ImHUI.Opened[gid] = true
         end,
         close = function()
             SendNUIMessage({
                 type = 'destroy',
                 gui = Guis[gid]
             })
+            ImHUI.Opened[gid] = nil
         end
     }
 end
@@ -125,7 +128,7 @@ function ImHUI.update(gid)
         end,
         slider = function(id, value, default, min, max)
             table.insert(Guis[gid].localContentUpdate,
-                { id = id, method = 'sliderFloat', value = value, defaultValue = 1, data = { min, max } })
+                { id = id, method = 'sliderFloat', value = value, defaultValue = default, data = { min, max } })
         end,
         input = function(id, value, default)
             table.insert(Guis[gid].localContentUpdate,
@@ -158,12 +161,6 @@ function ImHUI.update(gid)
         endWrapper = function()
             table.insert(Guis[gid].localContentUpdate, { id = GetGameTimer(), method = 'endWrapper' })
         end,
-        open = function()
-            SendNUIMessage({
-                type = 'create',
-                gui = Guis[gid]
-            })
-        end,
         update = function()
             SendNUIMessage({
                 type = 'update',
@@ -173,12 +170,6 @@ function ImHUI.update(gid)
                 Guis[gid].content[k] = v
             end
             Guis[gid].localContentUpdate = {}
-        end,
-        close = function()
-            SendNUIMessage({
-                type = 'destroy',
-                gui = Guis[gid]
-            })
         end
     }
 end
@@ -189,6 +180,10 @@ end
 
 exports('getImHUI', function()
     return ImHUI
+end)
+
+exports('hasOpened', function(id)
+    return ImHUI.Opened[id]
 end)
 
 RegisterNUICallback('clickedButton', function(data, cb)
@@ -202,6 +197,7 @@ RegisterNUICallback('clickedSwitchButton', function(data, cb)
 end)
 
 RegisterNUICallback('windowClosed', function(data, cb)
+    ImHUI.Opened[data.guiId] = false
     TriggerEvent('imhui:windowClosed', data.guiId, data.elementsData)
 end)
 
